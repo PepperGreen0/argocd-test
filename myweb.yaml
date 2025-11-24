@@ -63,4 +63,5 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+      nodePort: 31197
   type: NodePort # เปิด Port ให้เข้าจากภายนอก
