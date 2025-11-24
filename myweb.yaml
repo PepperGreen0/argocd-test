@@ -64,3 +64,6 @@ spec:
   ports:
     - protocol: TCP
       port: 80
+      targetPort: 80
+      nodePort: 31200 # ล็อคเลข Port ไว้ที่ 31197
+  type: NodePort
