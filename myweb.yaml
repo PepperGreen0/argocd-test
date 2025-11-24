@@ -8,9 +8,11 @@ data:
     <!DOCTYPE html>
     <html>
     <head>
+      <!-- บรรทัดนี้สำคัญมาก! บอกให้รองรับภาษาไทย -->
+      <meta charset="UTF-8"> 
       <title>Hello GitOps</title>
       <style>
-        body { font-family: sans-serif; text-align: center; padding-top: 50px; background-color: #f0f8ff; }
+        body { font-family: 'Sarabun', sans-serif; text-align: center; padding-top: 50px; background-color: #f0f8ff; }
         h1 { color: #007bff; }
       </style>
     </head>
@@ -29,7 +31,7 @@ kind: Deployment
 metadata:
   name: my-website
 spec:
-  replicas: 2  # สั่งให้รัน 2 ตัว (จะไปลง Worker 1 และ 2)
+  replicas: 2
   selector:
     matchLabels:
       app: my-website
@@ -40,16 +42,16 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:alpine # ใช้ Nginx ตัวเล็กๆ
+        image: nginx:alpine
         ports:
         - containerPort: 80
         volumeMounts:
         - name: html-volume
-          mountPath: /usr/share/nginx/html # เอาไฟล์ไปวางทับที่นี่
+          mountPath: /usr/share/nginx/html
       volumes:
       - name: html-volume
         configMap:
-          name: my-html-config # ดึงไฟล์มาจาก ConfigMap ข้างบน
+          name: my-html-config
 ---
 # 3. เปิดประตูให้เข้าได้ (Service)
 apiVersion: v1
@@ -62,6 +64,3 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
-      nodePort: 31197
-  type: NodePort # เปิด Port ให้เข้าจากภายนอก
