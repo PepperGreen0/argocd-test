@@ -19,7 +19,7 @@ data:
       <p>นี่คือหน้าเว็บ HTML ที่ Deploy ด้วย ArgoCD</p>
       <p>รันบน Kubernetes Cluster ของฉันเอง</p>
       <hr>
-      <small>Version 1.0 - ทดสอบ GitOps</small>
+      <small>Version 2.0 - update GitOps</small>
     </body>
     </html>
 ---
