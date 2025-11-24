@@ -1,0 +1,66 @@
+# 1. สร้างกล่องเก็บไฟล์ HTML (ConfigMap)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-html-config
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Hello GitOps</title>
+      <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; background-color: #f0f8ff; }
+        h1 { color: #007bff; }
+      </style>
+    </head>
+    <body>
+      <h1>🚀 สวัสดีชาวโลก!</h1>
+      <p>นี่คือหน้าเว็บ HTML ที่ Deploy ด้วย ArgoCD</p>
+      <p>รันบน Kubernetes Cluster ของฉันเอง</p>
+      <hr>
+      <small>Version 1.0 - ทดสอบ GitOps</small>
+    </body>
+    </html>
+---
+# 2. สร้าง Web Server (Deployment)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-website
+spec:
+  replicas: 2  # สั่งให้รัน 2 ตัว (จะไปลง Worker 1 และ 2)
+  selector:
+    matchLabels:
+      app: my-website
+  template:
+    metadata:
+      labels:
+        app: my-website
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine # ใช้ Nginx ตัวเล็กๆ
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html # เอาไฟล์ไปวางทับที่นี่
+      volumes:
+      - name: html-volume
+        configMap:
+          name: my-html-config # ดึงไฟล์มาจาก ConfigMap ข้างบน
+---
+# 3. เปิดประตูให้เข้าได้ (Service)
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-website-service
+spec:
+  selector:
+    app: my-website
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort # เปิด Port ให้เข้าจากภายนอก
